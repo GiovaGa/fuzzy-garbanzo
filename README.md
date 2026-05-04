@@ -1,5 +1,7 @@
 # fuzzy-garbanzo
 
+This repository contains notes and example notebooks related to facility location problems on graphs. A new notebook has been added at `notebooks/facility_location_graph.ipynb` demonstrating the uncapacitated facility location problem with brute-force and greedy methods.
+
 
 ## Bibliography
 
@@ -62,4 +64,3 @@ Summary: Pairwise facility interaction terms convert UFL into a 0–1 quadratic 
 
 - E. D. Demaine, U. Feige, M. Hajiaghayi, M. R. Salavatipour — “Dispersion Problems on Trees and Intervals.” Theoretical Computer Science (TCS) (approx. 2010).
 Summary: Gives exact/efficient algorithms for variants of dispersion on trees and intervals — directly relevant to graph dispersion constraints (pairwise distance lower bounds).
-
