@@ -1,5 +1,11 @@
 name: Build Presentation
 
+# Required permissions for Pages deployment and OIDC
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
 on:
   push:
     branches: [ main, master ]
@@ -14,10 +20,11 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    
+    outputs:
+      pdf-path: ${{ steps.set-pdf-path.outputs.pdf-path }}
     steps:
     - uses: actions/checkout@v4
-    
+
     - name: Install LaTeX dependencies
       run: |
         sudo apt-get update
@@ -31,10 +38,45 @@ jobs:
     - name: Build presentation
       working-directory: pres
       run: make build
-    
-    - name: Upload PDF artifact
-      uses: actions/upload-artifact@v4
+
+    - name: Ensure PDF exists
+      id: set-pdf-path
+      run: |
+        if [ -f pres/pres.pdf ]; then
+          echo "pdf-path=pres/pres.pdf" >> "$GITHUB_OUTPUT"
+        else
+          echo "Presentation PDF not found" >&2
+          exit 1
+        fi
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Download built PDF from build job
+      uses: actions/download-artifact@v4
       with:
         name: presentation-pdf
-        path: pres/pres.pdf
-        retention-days: 30
+        path: pres
+      # Note: keep this for compatibility if the upload-artifact step is removed in future
+
+    - name: Prepare Pages content
+      run: |
+        mkdir -p public
+        cp pres/pres.pdf public/pres.pdf
+        echo "<html><head><meta http-equiv=refresh content=0;url=pres.pdf></head><body><a href=pres.pdf>Presentation PDF</a></body></html>" > public/index.html
+
+    - name: Upload artifact for Pages
+      uses: actions/upload-pages-artifact@v4
+      with:
+        path: ./public
+
+  publish:
+    needs: deploy
+    runs-on: ubuntu-latest
+    steps:
+    - name: Deploy to GitHub Pages
+      uses: actions/deploy-pages@v2
