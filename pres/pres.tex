@@ -1,0 +1,111 @@
+\documentclass[11pt]{beamer}
+% Use the UniPD Padova DEI theme bundled as a submodule in pres/padova_theme
+% Ensure beamer can find the theme files located in the submodule directory
+\makeatletter
+\def\beamer@theme@path{{pres/padova_theme/}}
+\def\input@path{{pres/padova_theme/}}
+\makeatother
+% Load the PadovaDEI beamer theme (it loads its subcomponents itself)
+% Temporarily disabled to test compilation issues; re-enable once theme problems
+% are resolved.
+% Use beamer's theme loading mechanism so subcomponents are not double-loaded.
+% The original beamertheme bundles inner/outer/color/font themes and options.
+% Instead of loading beamertheme (which caused duplicate/definition errors here),
+% load the components directly and set the logos switch.
+\newif\ifbeamerpadovanologos
+\beamerpadovanologostrue
+\useinnertheme{rectangles}
+\input{pres/padova_theme/beamerouterthemePadovaDEI.sty}
+\input{pres/padova_theme/beamercolorthemePadovaDEI.sty}
+\input{pres/padova_theme/beamerfontthemePadovaDEI.sty}
+% Make LaTeX search for images in the theme directory (logo files live there)
+\graphicspath{{pres/padova_theme/}{pres/padova_theme/images/}}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx}
+\usepackage{tikz}
+% navigation symbols are disabled by the theme
+
+\title[Short Title]{Full Presentation Title}
+\author[Daniele Bugatti \& Giovanni Gaio]{Daniele Bugatti \and Giovanni Gaio}
+\institute[Unipd]{Universit\`a degli Studi di Padova}
+\date{\today}
+
+% The PadovaDEI theme provides a styled footline with logos and frame numbers
+
+\begin{document}
+
+% Title (slide 1)
+\begin{frame}[plain]
+  \titlepage
+\end{frame}
+
+% Idea (slide 2)
+\section{Idea}
+\begin{frame}{The Idea --- What we do}
+  \begin{itemize}
+    \item Elevator pitch: one clear sentence describing the core idea.
+    \item Short context: what gap this fills or what problem it solves.
+  \end{itemize}
+  \vfill
+  \begin{center}
+    % Replace this schematic with your own diagram
+    \begin{tikzpicture}[scale=0.9]
+      \node[draw,rounded corners,fill=blue!10] (A) at (0,0) {Input};
+      \node[draw,rounded corners,fill=green!10] (B) at (3,0) {Method};
+      \node[draw,rounded corners,fill=yellow!10] (C) at (6,0) {Benefit};
+      \draw[->,thick] (A) -- (B) -- (C);
+    \end{tikzpicture}
+  \end{center}
+  \vfill
+  {\tiny Presenter note: keep to ~60s; make the idea tangible and visual.}
+\end{frame}
+
+% Usefulness (slide 3)
+\section{Usefulness}
+\begin{frame}{Who Benefits \& Why It Matters}
+  \begin{itemize}
+    \item Primary users / stakeholders (short list).
+    \item Concrete benefits: time saved, accuracy gains, accessibility, cost reduction, etc.
+    \item A one-line example / scenario showing impact.
+  \end{itemize}
+  \vfill
+  {\tiny Presenter note: relate technical work to user value; ~60s.}
+\end{frame}
+
+% AI techniques (slide 4)
+\section{AI Techniques}
+\begin{frame}{AI Techniques --- Used or Planned}
+  \begin{itemize}
+    \item Core models / algorithms (e.g., transformer fine-tuning, CNNs, GNNs, RL).
+    \item Data sources and preprocessing notes (one short bullet).
+    \item Evaluation metrics and validation plan (how you'll measure success).
+  \end{itemize}
+  \vfill
+  {\tiny Presenter note: be concrete but concise; this is the technical heart (~2 minutes).}
+\end{frame}
+
+% Outcomes & next steps (slide 5)
+\section{Outcomes}
+\begin{frame}{Results, Expected Outcomes \& Next Steps}
+  \begin{itemize}
+    \item Key result or main hypothesis (one sentence).
+    \item Short list of next steps: experiments, deployment, user studies, data collection.
+  \end{itemize}
+  \vfill
+  {\tiny Presenter note: close with what you achieved or aim to achieve and any asks.}
+\end{frame}
+
+% Closing / questions (slide 6)
+\begin{frame}{Conclusion \& Questions}
+  \begin{itemize}
+    \item One-line recap: idea, impact, and main technique.
+    \item Contact or repo link (tiny).
+  \end{itemize}
+  \vfill
+  \begin{center}
+    Questions?\\{\tiny Contacts: \texttt{first@domain} \;|\; \texttt{second@domain}}
+  \end{center}
+\end{frame}
+
+\end{document}

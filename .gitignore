@@ -219,3 +219,14 @@ __marimo__/
 
 # pdfs
 sources/
+
+# Latex stuff
+tmp/
+*.aux
+*.fdb_latexmk
+*.fls
+*.nav
+*.out
+*.pdf
+*.snm
+*.toc
