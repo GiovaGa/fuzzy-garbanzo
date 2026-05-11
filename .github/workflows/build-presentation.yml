@@ -49,6 +49,12 @@ jobs:
           exit 1
         fi
 
+    - name: Upload PDF artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: presentation-pdf
+        path: pres/pres.pdf
+
   deploy:
     needs: build
     runs-on: ubuntu-latest
