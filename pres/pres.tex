@@ -1,37 +1,23 @@
 \documentclass[11pt]{beamer}
-% Use the UniPD Padova DEI theme bundled as a submodule in pres/padova_theme
-% Ensure beamer can find the theme files located in the submodule directory
-\makeatletter
-\def\beamer@theme@path{{pres/padova_theme/}}
-\def\input@path{{pres/padova_theme/}}
-\makeatother
-% Load the PadovaDEI beamer theme (it loads its subcomponents itself)
-% Temporarily disabled to test compilation issues; re-enable once theme problems
-% are resolved.
-% Use beamer's theme loading mechanism so subcomponents are not double-loaded.
-% The original beamertheme bundles inner/outer/color/font themes and options.
-% Instead of loading beamertheme (which caused duplicate/definition errors here),
-% load the components directly and set the logos switch.
-\newif\ifbeamerpadovanologos
-\beamerpadovanologostrue
-\useinnertheme{rectangles}
-\input{pres/padova_theme/beamerouterthemePadovaDEI.sty}
-\input{pres/padova_theme/beamercolorthemePadovaDEI.sty}
-\input{pres/padova_theme/beamerfontthemePadovaDEI.sty}
-% Make LaTeX search for images in the theme directory (logo files live there)
-\graphicspath{{pres/padova_theme/}{pres/padova_theme/images/}}
-\usepackage[T1]{fontenc}
-\usepackage[utf8]{inputenc}
+\usepackage{subfig}
+\usepackage{graphicx} 
+\usepackage{caption}
+\usepackage{padova_theme/beamerthemePadovaDEI}
+\usepackage{amsmath}
+\usepackage{hyperref}
 \usepackage{graphicx}
-\usepackage{tikz}
-% navigation symbols are disabled by the theme
+\usepackage{multirow}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{mathtools}
+\usepackage{lmodern}
+\usepackage{textcomp}
+\captionsetup[figure]{labelformat=empty}
 
 \title[Short Title]{Full Presentation Title}
 \author[Daniele Bugatti \& Giovanni Gaio]{Daniele Bugatti \and Giovanni Gaio}
-\institute[Unipd]{Universit\`a degli Studi di Padova}
 \date{\today}
-
-% The PadovaDEI theme provides a styled footline with logos and frame numbers
 
 \begin{document}
 
@@ -102,7 +88,8 @@
     \item One-line recap: idea, impact, and main technique.
     \item Contact or repo link (tiny).
   \end{itemize}
-  \vfill
+\end{frame}
+\begin{frame}
   \begin{center}
     Questions?\\{\tiny Contacts: \texttt{first@domain} \;|\; \texttt{second@domain}}
   \end{center}
