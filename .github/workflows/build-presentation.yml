@@ -1,0 +1,37 @@
+name: Build Presentation
+
+on:
+  push:
+    branches: [ main, master ]
+    paths:
+      - 'pres/**'
+      - '.github/workflows/build-presentation.yml'
+  pull_request:
+    branches: [ main, master ]
+    paths:
+      - 'pres/**'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        submodules: 'recursive'
+    
+    - name: Install LaTeX dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y texlive-latex-base texlive-fonts-recommended texlive-latex-extra
+    
+    - name: Build presentation
+      working-directory: pres
+      run: make build
+    
+    - name: Upload PDF artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: presentation-pdf
+        path: pres/pres.pdf
+        retention-days: 30

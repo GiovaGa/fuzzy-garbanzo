@@ -2,6 +2,24 @@
 
 This repository contains notes and example notebooks related to facility location problems on graphs. A new notebook has been added at `notebooks/facility_location_graph.ipynb` demonstrating the uncapacitated facility location problem with brute-force and greedy methods.
 
+## Presentation
+
+The beamer presentation is located in the `pres/` directory. 
+
+**[📊 Download Latest Presentation](https://github.com/anomalyco/fuzzy-garbanzo/actions/workflows/build-presentation.yml)** – Get the latest PDF from GitHub Actions artifacts
+
+You can also build it locally using:
+
+```bash
+cd pres
+make build
+```
+
+The presentation is automatically built by GitHub Actions on every push to `main`/`master`. To download the PDF:
+1. Go to the [Actions tab](https://github.com/anomalyco/fuzzy-garbanzo/actions/workflows/build-presentation.yml)
+2. Click on the latest workflow run
+3. Download the `presentation-pdf` artifact
+
 
 ## Bibliography
 
