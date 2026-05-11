@@ -30,7 +30,7 @@ jobs:
       run: make build
     
     - name: Upload PDF artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: presentation-pdf
         path: pres/pres.pdf

@@ -6,7 +6,7 @@ This repository contains notes and example notebooks related to facility locatio
 
 The beamer presentation is located in the `pres/` directory. 
 
-**[📊 Download Latest Presentation](https://github.com/anomalyco/fuzzy-garbanzo/actions/workflows/build-presentation.yml)** – Get the latest PDF from GitHub Actions artifacts
+**[📊 Download Latest Presentation](https://github.com/GiovaGa/fuzzy-garbanzo/actions/workflows/build-presentation.yml)** – Get the latest PDF from GitHub Actions artifacts
 
 You can also build it locally using:
 
@@ -16,7 +16,7 @@ make build
 ```
 
 The presentation is automatically built by GitHub Actions on every push to `main`/`master`. To download the PDF:
-1. Go to the [Actions tab](https://github.com/anomalyco/fuzzy-garbanzo/actions/workflows/build-presentation.yml)
+1. Go to the [Actions tab](https://github.com/GiovaGa/fuzzy-garbanzo/actions/workflows/build-presentation.yml)
 2. Click on the latest workflow run
 3. Download the `presentation-pdf` artifact
 
