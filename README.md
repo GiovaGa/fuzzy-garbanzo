@@ -6,7 +6,7 @@ This repository contains notes and example notebooks related to facility locatio
 
 The beamer presentation is located in the `pres/` directory. 
 
-**[📊 Download Latest Presentation](https://github.com/GiovaGa/fuzzy-garbanzo/actions/workflows/build-presentation.yml)** – Get the latest PDF from GitHub Actions artifacts
+**[📄 Download Latest Built PDF](https://nightly.link/GiovaGa/fuzzy-garbanzo/workflows/build-presentation.yml/main/presentation-pdf.zip)** – Direct download of the latest build artifact (ZIP containing `pres.pdf`)
 
 You can also build it locally using:
 
