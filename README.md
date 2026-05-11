@@ -15,12 +15,6 @@ cd pres
 make build
 ```
 
-The presentation is automatically built by GitHub Actions on every push to `main`/`master`. To download the PDF:
-1. Go to the [Actions tab](https://github.com/GiovaGa/fuzzy-garbanzo/actions/workflows/build-presentation.yml)
-2. Click on the latest workflow run
-3. Download the `presentation-pdf` artifact
-
-
 ## Bibliography
 
 Our work in this repository is based on the following two works:
