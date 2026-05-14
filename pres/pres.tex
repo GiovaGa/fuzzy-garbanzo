@@ -32,7 +32,8 @@
   \begin{itemize}
     \item \textbf{Integrated Network Design:} Strategically placing healthcare facilities where high-level hubs and local clinics are co-located to minimize infrastructure costs. 
     
-    \item \textbf{Graph-Based Optimization:} Modeling the region as a weighted graph—where nodes represent urban centers weighted by population—to determine the optimal placement of Tier-1 and Tier-2 facilities for maximum coverage.
+    \item \textbf{Graph-Based Optimization:} Modeling the region as a weighted graph—where nodes represent urban centers weighted by population—to determine the optimal placement of Tier-1 and Tier-2 facilities for maximum coverage with a limited budget.
+
   \end{itemize}
 
   \vfill
@@ -50,9 +51,7 @@
       \draw[->, thick] (B) -- (C);
     \end{tikzpicture}
   \end{center}
-  
   \vfill
-  % {\tiny Presenter note: ~60s. Focus on the transition from demographic data to spatial optimization via SA.}
 \end{frame}
 
 % Usefulness (slide 3)
@@ -85,7 +84,7 @@
     \begin{itemize}
         \item \textbf{Input:} A weighted graph $G=(V, E)$, where $w_i$ represents the population of node $i$, and the number of facilities to be placed for each level ($k_1, k_2$).
         \item \textbf{Output:} An optimal allocation of facilities $S_1, S_2 \subset V$, such that $|S_l| = k_l$ and $S_2 \subseteq S_1$ (\textbf{Nested Hierarchy})
-        \item \textbf{Objective:} Minimize $Z = \sum_{l \in Levels} \alpha_l \cdot \Phi_j$, where $\Phi_j$ is a distance-based function to the nearest facility of level $j$.
+        \item \textbf{Objective:} Minimize $Z = \sum_{j\in V} \sum_{l \in Levels} \alpha_l \cdot \Phi_j$, where $\Phi_j$ is a distance-based function to the nearest facility of level $l$.
     \end{itemize}
   \end{block}
 
@@ -94,10 +93,11 @@
   \begin{itemize}
     \item The HFLP is Search Problem where the search space
     $\mathcal{S}$ is composed by all possible permutation of facility locations. 
-  \end{itemize}
+    This solution space has exponential size:
   \[
-  |\mathcal{S}| = \binom{|V|}{k_1} \binom{k_1}{k_2}
+  |\mathcal{S}| = \binom{|V|}{k_1} \binom{k_1}{k_2}.
   \]
+  \end{itemize}
   \vfill
 \end{frame}
 
@@ -111,17 +111,10 @@
 
   \begin{block}{Simulated Annealing}
     \begin{itemize}
-      \item \textbf{Neighborhood:} Relocation of one facility, maintaining the nested constraint ($S_2 \subseteq S_1$)
-      \item \textbf{Temperature Schedule:} $T_{i+1} = \alpha T_{i}, \ 0<\alpha<1$
-      \item \textbf{Acceptance Probability:}
-      \[ 
-      P(S \to S') = 
-      \begin{cases} 
-      1 & \text{if } \Delta Z < 0 \\
-      e^{-\frac{\Delta Z}{T}} & \text{if } \Delta Z \geq 0 
-      \end{cases}
-      \]
+      \item \textbf{Probabilistic update:} Iteratively try some local changes that respect the constraints and accept each proposed change independently with probability:
+      \[ P(S \to S') = \min\left\{ 1, e^{-\frac{\Delta Z}{T}} \right\} \]
     \end{itemize}
+      \item \textbf{Temperature Schedule:} exponential $T_{i+1} = \alpha T_{i}$, with a fixed $\ 0<\alpha<1$, or maybe something fancier.
   \end{block}
 
   \vfill
@@ -134,7 +127,7 @@
     \item \textbf{Goal:} We aim to obtain near-optimal solutions in polynomial time, avoiding the exponential explosion of exact ILP solvers.
     \vspace{10pt}
 
-    \item \textbf{Validation:} Benchmarking on small synthetic networks, for which an exact solution is computable, to verify a negligible optimality gap.
+    \item \textbf{Validation:} Benchmarking on small synthetic networks, for which an exact solution is computable, to quantify the optimality gap.
 
     \vfill
 
@@ -144,10 +137,9 @@
 
 % Closing / questions (slide 6)
 \begin{frame}{Conclusion \& Questions}
-  \begin{itemize}
-    \item \textbf{Summary:} We developed a \textbf{Simulated Annealing} solver to optimize \textbf{hierarchical healthcare networks}, balancing citizen accessibility and infrastructure costs on a regional scale (\textit{Veneto case study}).
-  \end{itemize}
+
 \end{frame}
+
 \begin{frame}
   \begin{center}
     Questions?\\{\tiny Contacts: \texttt{giovanni.gaio.1@studenti.unipd.it} \;|\; \texttt{daniele.bugatti@studenti.unidpd.it}}
