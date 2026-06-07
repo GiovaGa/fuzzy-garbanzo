@@ -1,0 +1,79 @@
+\documentclass[a4paper,10pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[margin=2cm]{geometry}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{hyperref}
+
+\title{Hierarchical Facility Location Problem -- Report}
+\author{Daniele Bugatti \& Giovanni Gaio}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+%
+% The report should describe:
+%   The idea of the project circa ok
+%   How the project could help people -- bugo ? introduzione
+%   AI tools used in the project -- faccio io
+%   Links to topics seen in other courses, if any -- ILP -> OR 
+%
+
+
+\section{Introduction}
+The hierarchical facility location problem (HFLP) considered here is the two-level, globally-inclusive, nested formulation: demand nodes are assigned independently to an open Level-1 and to an open Level-2 facility, and Level-2 sites must be a subset of Level-1 sites. % 
+
+We fix the maximum number of Level 1 and Level 2 facilities.
+With this constraint, we minimize the following cost function:
+\[ \sum_{i\in V} h_i \min_{j\in L_1} d_{ij} + \sum_{i\in V}\sum_j h_i \min_{j\in L_2} d_{ij} \]
+where $h$ is the vector of demands, and $d$ is the matrix of distances.
+
+\section{Methods}
+This problem can be written as an Integer Linear Program (ILP), so we can use standard tools for this problem to evaluate other faster approaches, at least on small instances.
+
+\subsection{Simulated Annealing (SA)}
+SA maintains two sets of open facilities;  At each step a swap move replaces an open facility with a closed one (at the same level) or swaps within the nested constraint for Level-2.
+The acceptance follows the Metropolis criterion with a fixed geometric cooling schedule.
+
+\subsection{Genetic Algorithm (GA)}
+The GA uses a population of candidate solutions, tournament selection, crossover and mutation operators adapted to the combinatorial structure. Convergence history is recorded for analysis.
+
+\subsection{Instances and Experimental Setup}
+We ran experiments on synthetic instances and real-data.
+
+As artificial problems, we tested two topologies: Erdos-Reyni random graphs and a rectangular grid.
+
+Real-data Veneto network: 559 comuni with demand equal to 2021 population values from ISTAT.
+
+% Common settings for heuristics (used unless otherwise specified): seeded random generators for reproducibility, tuned temperature schedule for SA, and typical population/generation combinations for the GA (reported per experiment in the notebooks).
+
+\section{Results}
+Selected highlights and performance summaries follow. Full plots and detailed histories appear in the notebooks; here we report representative numbers.
+
+\subsection{Artificial instances}
+On the artificial instances we observed that both AI search techniques reach the ILP optimal value on small instances ($n=20$).
+
+On larger instances ($n$ up to $400$), the ILP runtime becomes too large to be tractable. We tested a grid graph and a larger random graph. In both these cases the methods converge to within $X\%$ of each other.
+
+
+\subsection{Veneto real-data instance}
+We chose 21 Level 1 facilities (equal to the number of ULSS) and 5 Level 2 facilities.
+
+This is the largest real instance tested. Results:
+\begin{itemize}
+    \item ILP produced an \textbf{optimal} solution with objective $~5.13\cdot 10^{10}$ and solve time ~71.9 s.
+  \item Simulated Annealing found a solution matching the ILP objective in the run reported.
+  \item Genetic Algorithm returned a solution with objective  $~5.24\cdot 10^{10}$ i.e. a \textbf{~2.06\%} gap from the best solution.
+\end{itemize}
+Representative Level-2 sites from the GA solution: Isola Vicentina, Lozzo di Cadore, Padova, Pescantina, Venezia.
+
+\section{Conclusions}
+Implementations of ILP, Simulated Annealing, and Genetic Algorithm for the globally-inclusive nested HFLP were developed and validated. ILP provides exact solutions for small instances and a useful reference when solvable; SA and GA are viable scalable alternatives for larger instances and real-world data. On the tested Veneto instance SA matched the ILP optimum while GA was within a few percent. Future work could include solver tuning, hybrid heuristics, capacity extensions, and benchmarking with stronger MIP solvers.
+
+% \section*{References}
+% Selected references in the notebooks: Daskin (1995); \citetitle{SahinSural2007} (Şahin & Süral, 2007) — see the notebooks for citations and discussion. 
+
+\end{document}
