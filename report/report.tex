@@ -6,6 +6,7 @@
 \usepackage{graphicx}
 \usepackage{booktabs}
 \usepackage{hyperref}
+\usepackage{amsmath}
 
 \title{Hierarchical Facility Location Problem -- Report}
 \author{Daniele Bugatti \& Giovanni Gaio}
@@ -24,56 +25,80 @@
 
 
 \section{Introduction}
-The hierarchical facility location problem (HFLP) considered here is the two-level, globally-inclusive, nested formulation: demand nodes are assigned independently to an open Level-1 and to an open Level-2 facility, and Level-2 sites must be a subset of Level-1 sites. % 
 
-We fix the maximum number of Level 1 and Level 2 facilities.
-With this constraint, we minimize the following cost function:
-\[ \sum_{i\in V} h_i \min_{j\in L_1} d_{ij} + \sum_{i\in V}\sum_j h_i \min_{j\in L_2} d_{ij} \]
-where $h$ is the vector of demands, and $d$ is the matrix of distances.
+The presence and distribution of medical facilities within a geographical region address a critical objective: maximizing accessibility to ensure that every resident can reach a healthcare provider in the shortest possible time. Historically, however, the development of these services has been carried out independently by local authorities, each focusing solely on their respective territories without a large-scale, coordinated strategy. Consequently, this uncoordinated growth has led, for example, to an oversupply of hospitals relative to actual demand. In contrast, we propose a top-down strategy that enables holistic planning. By considering both population distribution and the road network, this approach aims to minimize the average travel distance for residents to their nearest facility. Furthermore, we account for the fact that hospital facilities vary in their capacity and the breadth of services they offer. Specifically, we distinguish two hierarchical levels: local clinics, which can be distributed more densely across the territory but cannot address all medical needs, and hospital hubs, which are more resource-intensive and thus fewer in number, but can fulfill any medical requirement, including those covered by local clinics.
+
+In our project, we model this challenge as a graph optimization problem. Given a fixed number $k_1$ and $k_2$ of Level 1 and Level 2 facilities, respectively, the objective is to select two subsets of vertices, $S_1$ and $S_2$, subject to the following constraints:
+\[
+\begin{cases}
+|S_1| = k_1 \\
+|S_2| = k_2 \\
+S_2 \subseteq S_1
+\end{cases}
+\]
+
+The third condition defines the hierarchical nature of the facilities, establishing this problem as an extension of the classic Facility Location Problem: Level 2 facilities, being higher in the hierarchy, inherently encompass the capabilities of Level 1 facilities. The selection of $S_1$ and $S_2$ aims to minimize the following objective function:
+\[
+\sum_{i \in V} h_i \min_{j \in S_1} d_{ij} + \sum_{i \in V} h_i \min_{j \in S_2} d_{ij}
+\]
+
+Since the resulting optimization problem exhibits a combinatorial search space that grows exponentially with the number of candidate locations, exact approaches become computationally intractable for large-scale instances. Therefore, we investigate two heuristic methods—a simulated annealing algorithm and a genetic algorithm—comparing their performance with the exact solution computed via an ILP solver on both synthetic and real datasets.
+
 
 \section{Methods}
-This problem can be written as an Integer Linear Program (ILP), so we can use standard tools for this problem to evaluate other faster approaches, at least on small instances.
 
-\subsection{Simulated Annealing (SA)}
-SA maintains two sets of open facilities;  At each step a swap move replaces an open facility with a closed one (at the same level) or swaps within the nested constraint for Level-2.
-The acceptance follows the Metropolis criterion with a fixed geometric cooling schedule.
+In this project, we developed two approximate algorithms to tackle the complexity of the HFLP search space: one based on the simulated annealing technique and another implementing a genetic algorithm. The core principle behind both methods is to progressively improve candidate solutions through non-deterministic updates that, on average, lower the objective function value. While this approach enables an efficient, guided exploration of a fraction of the search space, it does not guarantee the optimality of the final solution.
 
-\subsection{Genetic Algorithm (GA)}
-The GA uses a population of candidate solutions, tournament selection, crossover and mutation operators adapted to the combinatorial structure. Convergence history is recorded for analysis.
+\subsection{Simulated Annealing}
 
-\subsection{Instances and Experimental Setup}
-We ran experiments on synthetic instances and real-data.
+We implemented a Simulated Annealing algorithm where, for each move, a single facility chosen at random from both $S_1$ and $S_2$ and it placed in another empty node. Of course, if the facility extracted has Level 2, its new location will be chosen among $S_1 \setminus S_2$. 
 
-As artificial problems, we tested two topologies: Erdos-Reyni random graphs and a rectangular grid.
+Then, the acceptance criterion follows the standard
+\[ 
+      P(S \to S') = 
+      \begin{cases} 
+      1 & \text{if } \Delta Z < 0 \\
+      e^{-\frac{\Delta Z}{T}} & \text{if } \Delta Z \geq 0 
+      \end{cases}
+\]
+where $\Delta$ is the difference of the objective function in the new and the old configuration.
 
-Real-data Veneto network: 559 comuni with demand equal to 2021 population values from ISTAT.
+The temperature follows the bounded geometric progression $T_{k+1} = \min (\alpha T_k, T_{\text{MIN}})$. In our algorithm we fixed $\alpha = 0.995$ and $T_{\text{MIN}} = 10^{-3}$.
+% number of iterations?
 
-% Common settings for heuristics (used unless otherwise specified): seeded random generators for reproducibility, tuned temperature schedule for SA, and typical population/generation combinations for the GA (reported per experiment in the notebooks).
+\subsection{Genetic Algorithm}
 
-\section{Results}
-Selected highlights and performance summaries follow. Full plots and detailed histories appear in the notebooks; here we report representative numbers.
+We further implemented a Genetic Algorithm (GA) to metaheuristically explore the HFLP solution space. Each individual in the population is represented as a tuple of sets $(S_1, S_2)$ corresponding to a feasible configuration of open facilities. The fitness of an individual is directly defined by its total demand-weighted distance, which the algorithm aims to minimize.
 
-\subsection{Artificial instances}
-On the artificial instances we observed that both AI search techniques reach the ILP optimal value on small instances ($n=20$).
-
-On larger instances ($n$ up to $400$), the ILP runtime becomes too large to be tractable. We tested a grid graph and a larger random graph. In both these cases the methods converge to within $X\%$ of each other.
-
-
-\subsection{Veneto real-data instance}
-We chose 21 Level 1 facilities (equal to the number of ULSS) and 5 Level 2 facilities.
-
-This is the largest real instance tested. Results:
+To transition from one generation to the next, the population is evolved through three sequential operators:
 \begin{itemize}
-    \item ILP produced an \textbf{optimal} solution with objective $~5.13\cdot 10^{10}$ and solve time ~71.9 s.
-  \item Simulated Annealing found a solution matching the ILP objective in the run reported.
-  \item Genetic Algorithm returned a solution with objective  $~5.24\cdot 10^{10}$ i.e. a \textbf{~2.06\%} gap from the best solution.
+    \item \textbf{Selection}: A $k$-way tournament selection is applied. For each parent slot, $k$ individuals are sampled uniformly at random from the population, and the one exhibiting the lowest objective function value wins the tournament.
+    \item \textbf{Crossover}: With a predefined crossover probability, two parents combine their genetic material. The offspring's Level-1 set ($S_1$) is formed by randomly sampling $p_1$ nodes from the union of the parents' Level-1 sets. To ensure the nesting constraint, the Level-2 set ($S_2$) is constructed by sampling $p_2$ nodes from the intersection of the newly formed $S_1$ and the union of the parents' Level-2 sets. If this intersection contains fewer than $p_2$ candidates, the remaining slots are filled by sampling directly from $S_1$.
+    \item \textbf{Mutation}: With a mutation rate $\mu$, the offspring undergoes independent random swap mutations. A Level-1 mutation replaces an open site in $S_1$ with a closed one (propagating the change to $S_2$ if the removed node was nested). Similarly, a Level-2 mutation swaps a site in $S_2$ with an available node in $S_1 \setminus S_2$.
 \end{itemize}
-Representative Level-2 sites from the GA solution: Isola Vicentina, Lozzo di Cadore, Padova, Pescantina, Venezia.
+Generational replacement is performed alongside an elitism strategy, ensuring that the best-performing individual from the previous generation always survives unchanged into the next.
 
-\section{Conclusions}
-Implementations of ILP, Simulated Annealing, and Genetic Algorithm for the globally-inclusive nested HFLP were developed and validated. ILP provides exact solutions for small instances and a useful reference when solvable; SA and GA are viable scalable alternatives for larger instances and real-world data. On the tested Veneto instance SA matched the ILP optimum while GA was within a few percent. Future work could include solver tuning, hybrid heuristics, capacity extensions, and benchmarking with stronger MIP solvers.
+\section{Result}
 
-% \section*{References}
-% Selected references in the notebooks: Daskin (1995); \citetitle{SahinSural2007} (Şahin & Süral, 2007) — see the notebooks for citations and discussion. 
+We compared the quality of the results of our methods with a standard ILP solver.
+
+\subsection{Synthetic data}
+
+As a preliminary step we tested on two families of synthetic graphs: random graphs (Erdos-Reyni) and grid graphs.
+We tested first small graphs, with ~50 nodes, then larger graphs with up to 400 nodes.
+
+For the cases where it was possible we compared the solutions from SA and GA with the optimal given by the ILP.
+For smaller graphs, up to ~100 nodes, we observed that SA always found the optimal solution with runtime similar to ILP. GA also achieved an optimal cost in most cases, though with longer runtime.
+
+On larger graphs, where we couldn't evaluate the optimal ILP solution in reasonable times, we observed similar optimized cost for SA and GA.
+It is notable that SA found consistently better solutions than GA on a roughly equivalent runtime.
+
+\subsection{Simulation on Veneto}
+
+In this case we chose $p_1 = 21$, equal to the number of hospitals in the region. $p_2 = 5$ is chosen for no specific reason.
+
+Surprisingly, on this graph we were also able to get a solution using ILP.
+
+
 
 \end{document}
