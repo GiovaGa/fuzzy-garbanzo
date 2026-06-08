@@ -40,14 +40,6 @@ Algorithms implemented
 9. plot_solution            – visualise a solution on the graph
 10. plot_convergence_history – plot cost / temperature over iterations
 11. compare_bar             – bar chart comparing algorithms
-
-References
-----------
-Sahin & Sural (2007). A review of hierarchical facility location models.
-  Computers & Operations Research.
-Farahani et al. (2014). Hierarchical facility location problem: Models,
-  classifications, techniques, and applications.
-  Computers & Industrial Engineering.
 """
 
 import math
