@@ -1,9 +1,11 @@
-\documentclass[a4paper,11pt]{article}
+\documentclass[a4paper,11pt, twocolumn]{article}
+\setlength{\columnsep}{1cm}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage{lmodern}
-\usepackage[margin=1.5cm]{geometry}
+\usepackage[margin=2cm]{geometry}
 \usepackage{graphicx}
+\usepackage{subcaption}
 \usepackage{booktabs}
 \usepackage{hyperref}
 \usepackage{amsmath}
@@ -52,7 +54,7 @@ Then, the acceptance criterion follows the standard
 
 where $\Delta$ is the difference of the objective function in the new and the old configuration.
 
-The temperature follows the bounded geometric progression $T_{k+1} = \min (\alpha T_k, T_{\text{MIN}})$. In our algorithm we fixed $\alpha = 0.995$ and $T_{\text{MIN}} = 10^{-3}$.
+The temperature follows the bounded geometric progression $T_{k+1} = \min (\alpha T_k, T_{\text{MIN}})$. In our algorithm we fixed $\alpha = 0.9999$ and $T_{\text{MIN}} = 10^{-3}$.
 
 \subsection{Genetic Algorithm}
 The GA maintains a population of candidate tuples $(S_1, S_2)$ scored by their total demand-weighted distance. Successive generations are evolved through three sequential operators:
@@ -81,21 +83,28 @@ The model was applied to real-world regional data describing the Veneto Region. 
 
 The choice of parameters $k_1 = 28$ and $k_2 = 8$ naturally follows the regional "Hub and Spoke" healthcare model established by the \textit{Deliberazione della Giunta Regionale n. 614 (14 May 2019)}. This institutional act classifies Veneto's hospitals into 8 high-specialty centers (hubs) and 20 lower-level facilities (spokes).
 
-With this parameters we observed the results shown in \autoref{table:1}. % We tuned the parameters for SA and GA to produce a runtime around half of the ILP.
-Here once again SA comes within $1\%$ of the exact optimal cost, while GA is only within $4\%$.
+With this parameters we observed the results shown in \autoref{table:1} and \autoref{fig:1}. % We tuned the parameters for SA and GA to produce a runtime around half of the ILP.
+Here once again SA comes within $1.4\%$ of the exact optimal cost half of the times, while GA is only within $2.8\%$. Once again SA is shown to produce consistently higher quality solutions in a lower runtime than GA.
 
-\begin{table}
+\begin{table}[htb]
     \centering
-    \begin{tabular}{|c|ccc|}
+    \begin{tabular}{|c||c|c|c|}
         \hline
-        Algorithm &    Objective & Relative gap from opt.  &  Runtime (s) \\ \hline
-        ILP (Exact) & $ 3.4914\cdot 10^{10}$ & 0 \% &66 \\
-        Simulated Annealing & $3.5193\cdot 10^{10}$ & 0.80\% & 38.4 \\
-        Genetic Algorithm & $3.6288\cdot 10^{10}$ & 3.94\% & 38.1 \\
+        Algorithm &    Objective & Relative gap  &  Runtime (s) \\
+        \hline
+        ILP & $3.49\cdot 10^{10}$  &0 \%& 63.0  \\
+        GA  &$ 3.59\cdot 10^{10}$ & 2.8 \% & 44.7  \\
+        SA  & $3.54\cdot 10^{10}$ & 1.4 \% & 40.3  \\
         \hline
 \end{tabular}
-\caption{Short summary of runs on the Veneto Region graph with $k_1=28$ and $k_2=8$.}
+\caption{Short summary of runs on the Veneto Region graph with $k_1=28$ and $k_2=8$. Values are median.}
 \label{table:1}
 \end{table}
+\begin{figure}[htb]
+    \centering
+    \includegraphics[width=0.3\textwidth]{plot.pdf}
+    \caption{Scatterplot of runtimes and achieved costs on the Veneto Region instance.}
+    \label{fig:1}
+\end{figure}
 
 \end{document}
